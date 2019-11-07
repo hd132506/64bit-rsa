@@ -59,6 +59,27 @@ void modPowTest() {
     }
 }
 
+void RNGTest() {
+    uint seed = time(NULL);
+
+    InitWELLRNG512a(&seed);
+    for(int i = 0; i < 50; ++i) {
+        printf("%lf\n", WELLRNG512a());
+    }
+}
+
+void isPrimeTest() {
+    llint repeat = 8;
+    /* test case format: testNum, anser */
+    llint test_case[][2] = {{2, 1}, {3, 1}, {5, 1}, {11, 1}, {19, 1}, {26, 0}};
+
+    int len = sizeof(test_case) / sizeof(llint) / 2;
+
+    for(int i = 0; i < len; ++i) {
+        assert(IsPrime(test_case[i][0], repeat) == test_case[i][1]);
+    }
+}
+
 #ifdef TEST
 
 int main() {
@@ -66,6 +87,7 @@ int main() {
     modAddTest();
     modMulTest();
     modPowTest();
+    isPrimeTest();
     printf("Test complete");
 }
 

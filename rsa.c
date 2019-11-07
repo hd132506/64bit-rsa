@@ -133,7 +133,7 @@ llint ModPow(llint base, llint exp, llint n) {
                이론적으로 4N(99.99%) 이상 되는 값을 선택하도록 한다. 
  */
 bool IsPrime(llint testNum, llint repeat) {
-    llint result;
+    bool result = 0;
     return result;
 }
 
