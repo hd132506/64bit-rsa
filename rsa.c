@@ -134,6 +134,13 @@ llint ModPow(llint base, llint exp, llint n) {
  */
 bool IsPrime(llint testNum, llint repeat) {
     bool result = 0;
+    llint s = 0, d = 0; /* n-1 = 2^s*d */
+    do testNum >>= 1, ++s;
+    while(!(testNum & 1));
+    d = testNum;
+
+    
+
     return result;
 }
 
