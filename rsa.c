@@ -41,8 +41,8 @@ llint mod(llint a, llint n) {
     llint shifter = n;
 
     /* 
-    Subtract the multiple of n first(kind of binariy search)
-    a would be fastly reduced in any case
+    Subtract the multiple of n first(kind of binary search)
+    a would be reduced fast in any case
     */
     while(a > (shifter << 1) && shifter < ULL_MAX_BIT) shifter <<= 1;
     while(shifter >= n && a >= n) {
