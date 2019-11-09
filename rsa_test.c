@@ -5,6 +5,10 @@
 #include <assert.h>
 #include "rsa.h"
 
+#ifndef ULLONG_MAX
+#include <limits.h>
+#endif
+
 
 void modTest() {
     assert(mod(1, 2) == 1);
@@ -60,35 +64,58 @@ void modPowTest() {
 }
 
 void RNGTest() {
+    int frequency[22] = {};
     uint seed = time(NULL);
 
     InitWELLRNG512a(&seed);
-    for(int i = 0; i < 50; ++i) {
-        printf("%lf\n", WELLRNG512a());
+    for(int i = 0; i < 1000; ++i) {
+        frequency[randomWithRange(0, 21)]++;
+    }
+
+    for(int i = 0; i < 21; ++i) {
+        printf("%d\n", frequency[i]);
     }
 }
 
 void isPrimeTest() {
-    llint repeat = 8;
-    /* test case format: testNum, anser */
-    llint test_case[][2] = {{2, 1}, {3, 1}, {5, 1}, {11, 1}, {19, 1}, {26, 0}};
+    llint repeat = 10;
+
+    /* test case format: {testNum, answer} */
+    llint test_case[][2] = {
+        {3, 1}, {5, 1}, {11, 1}, 
+        {19, 1}, {73, 1}, {2147483647, 1}, {2147483648, 0}, {2147483649, 0}
+    };
 
     int len = sizeof(test_case) / sizeof(llint) / 2;
 
     for(int i = 0; i < len; ++i) {
-        assert(IsPrime(test_case[i][0], repeat) == test_case[i][1]);
+        assert(IsPrime(test_case[i][0], repeat) == test_case[i][1] ||
+        !printf("case number %d is wrong\n", i));
     }
+}
+
+void modInvTest() {
+    assert(ModInv(3, 11) == 4);
+}
+
+void quotiontTest() {
+    assert(quotiont(17, 2) == 8);
 }
 
 #ifdef TEST
 
 int main() {
+    uint seed = time(NULL);
+    InitWELLRNG512a(&seed);
+
     modTest();
+    quotiontTest();
     modAddTest();
     modMulTest();
     modPowTest();
     isPrimeTest();
-    printf("Test complete");
+    // RNGTest(); /* Success */
+    printf("Test complete\n");
 }
 
 #endif

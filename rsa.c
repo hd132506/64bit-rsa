@@ -12,6 +12,10 @@
 #include <time.h>
 #include "rsa.h"
 
+#ifndef ULLONG_MAX
+#include <limits.h>
+#endif
+
 llint p, q, e, d, n;
 
 
@@ -50,6 +54,18 @@ llint mod(llint a, llint n) {
         shifter >>= 1;
     }
     return a;
+}
+
+llint quotient(llint a, llint n) {
+    
+}
+
+/*
+ * Random number function with range
+ * Returns random integer grater or equal to 'from' and less than 'to'
+ */
+llint randomWithRange(llint from, llint to) {
+    return from + (llint) (WELLRNG512a() * (to - from));
 }
 
 /*
@@ -112,6 +128,7 @@ llint ModMul(llint x, llint y, llint n) {
  */
 llint ModPow(llint base, llint exp, llint n) {
     /* Base condition */
+    if(exp == 0) return 1;
     if(exp == 1) return base;
 
     llint result = 1, sqrt;
@@ -133,15 +150,25 @@ llint ModPow(llint base, llint exp, llint n) {
                이론적으로 4N(99.99%) 이상 되는 값을 선택하도록 한다. 
  */
 bool IsPrime(llint testNum, llint repeat) {
-    bool result = 0;
-    llint s = 0, d = 0; /* n-1 = 2^s*d */
-    do testNum >>= 1, ++s;
-    while(!(testNum & 1));
-    d = testNum;
+    const bool notPrime = 0;
+    llint s = 0, d = testNum; /* n-1 = 2^s*d */
 
+    do d >>= 1, ++s;
+    while(!(d & 1));
     
 
-    return result;
+    for(llint i = 0; i < repeat; ++i) {
+        llint a = randomWithRange(1, testNum);
+        if(ModPow(a, d, testNum) == 1) return !notPrime;
+        for(llint r = 0; r < s; ++r) {
+            llint exp = ModMul(ModPow(2, r, testNum), d, testNum);
+            if(ModPow(a, exp, testNum) == testNum - 1)
+                return !notPrime;
+        }
+    }
+
+
+    return notPrime;
 }
 
 /*
@@ -153,6 +180,9 @@ bool IsPrime(llint testNum, llint repeat) {
  */
 llint ModInv(llint a, llint m) {
     llint result;
+    llint r = mod(a, m);
+    /* Premise: ax + ny = 1, x, y: integer */
+    
     return result;
 }
 

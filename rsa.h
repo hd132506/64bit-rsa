@@ -67,6 +67,8 @@ void InitWELLRNG512a(uint *init);
 double WELLRNG512a(void);
 
 llint mod(llint a, llint n);
+llint quotient(llint a, llint n);
+llint randomWithRange(llint from, llint to);
 
 // mini RSA 관련 인터페이스(구현해야 합니다.)
 llint ModAdd(llint a, llint b, byte op, llint n);
