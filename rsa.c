@@ -10,6 +10,7 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
+#include <assert.h>
 #include "rsa.h"
 
 #ifndef ULLONG_MAX
@@ -182,14 +183,20 @@ llint ModPow(llint base, llint exp, llint n) {
  */
 bool IsPrime(llint testNum, llint repeat) {
     const bool notPrime = 0;
+    /* Enough to decide primarity with a = following values in 2^64 */
+    const llint decision_values[] = {2, 325, 9375, 28178, 450775, 9780504, 1795265022};
+    const int chknum = sizeof(decision_values) / sizeof(llint);
+
     llint s = 0, d = testNum; /* n-1 = 2^s*d */
 
     do d >>= 1, ++s;
     while(!(d & 1));
     
 
-    for(llint i = 0; i < repeat; ++i) {
-        llint a = randomWithRange(1, testNum);
+    for(llint i = 0; i < repeat + chknum; ++i) {
+        llint a = i < chknum ?
+            decision_values[i] : randomWithRange(2, testNum);
+
         if(ModPow(a, d, testNum) == 1) return !notPrime;
         for(llint r = 0; r < s; ++r) {
             llint exp = ModMul(ModPow(2, r, testNum), d, testNum);
@@ -228,7 +235,24 @@ llint ModInv(llint a, llint m) {
  * @todo      과제 안내 문서의 제한사항을 참고하여 작성한다.
  */
 void miniRSAKeygen(llint *p, llint *q, llint *e, llint *d, llint *n) {
-    
+    llint phi;
+    do {
+        /* 2^27 < p, q < 2^32, 2^53 < n < 2^64 */
+        do *p = randomWithRange(1LL << 27, 1LL << 32);
+        while (!IsPrime(*p, 5));
+
+        do *q = randomWithRange(1LL << 27, 1LL << 32);
+        while (!IsPrime(*q, 5) || *p == *q);
+
+        *n = (llint)(*p)*(*q); /* overflow never occurs */
+
+        phi = (*p-1) * (*q-1);
+        do *e = randomWithRange(1, phi);
+        while(GCD(phi, *e) == 1);
+
+        *d = ModInv(*e, phi);
+    } while(ModMul(*e, *d, phi) != 1);
+    printf("e * d mod (p-1)(q-1) = %llu\n", ModMul(*e, *d, phi));
 }
 
 /*
@@ -240,21 +264,19 @@ void miniRSAKeygen(llint *p, llint *q, llint *e, llint *d, llint *n) {
  * @todo      과제 안내 문서의 제한사항을 참고하여 작성한다.
  */
 llint miniRSA(llint data, llint key, llint n) {
-    llint result;
+    assert(data < n);
+
+    llint result = ModPow(data, key, n);
     return result;
 }
 
 llint GCD(llint a, llint b) {
-    llint prev_a;
-
     while(b != 0) {
-        printf("GCD(%lld, %lld)\n", a, b);
-        prev_a = a;
+        // printf("GCD(%lld, %lld)\n", a, b);
         a = b;
-        while(prev_a >= b) prev_a -= b;
-        b = prev_a;
+        b = mod(a, b);
     }
-    printf("GCD(%lld, %lld)\n\n", a, b);
+    // printf("GCD(%lld, %lld)\n\n", a, b);
     return a;
 }
 

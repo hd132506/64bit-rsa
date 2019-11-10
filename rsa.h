@@ -49,7 +49,9 @@
 #define TRUE	1
 
 #define ULL_MAX_BIT 0x8000000000000000
-#define TEST
+
+/* Decides what to compile (rsa_test.c/rsa.c)*/
+// #define TEST
 
 // mini RSA 관련 타입
 typedef unsigned char bool;
@@ -75,7 +77,7 @@ llint ModAdd(llint a, llint b, byte op, llint n);
 llint ModMul(llint x, llint y, llint n);
 llint ModPow(llint base, llint exp, llint n);
 bool IsPrime(llint testNum, llint repeat);
-llint gcd(llint a, llint b);
+llint GCD(llint a, llint b);
 llint ModInv(llint a, llint m);
 void miniRSAKeygen(llint *p, llint *q, llint *e, llint *d, llint *n);
 llint miniRSA(llint data, llint key, llint n);

@@ -9,6 +9,7 @@
 #include <limits.h>
 #endif
 
+extern llint p, q, e, d, n;
 
 void modTest() {
     assert(mod(1, 2) == 1);
@@ -92,6 +93,8 @@ void isPrimeTest() {
         assert(IsPrime(test_case[i][0], repeat) == test_case[i][1] ||
         !printf("case number %d is wrong\n", i));
     }
+
+
 }
 
 void modInvTest() {
@@ -108,6 +111,17 @@ void quotientTest() {
     assert(quotient(ULLONG_MAX, ULLONG_MAX-1) == 1);
 }
 
+void keygenTest() {
+    llint p, q,  e,  d, n;
+    
+    for(int i = 0; i < 5; ++i) {
+        miniRSAKeygen(&p, &q, &e, &d, &n);
+        assert(ModMul(e, d, (p-1)*(q-1)) == 1);
+    }
+
+}
+
+
 #ifdef TEST
 
 int main() {
@@ -122,6 +136,7 @@ int main() {
     modPowTest();
     isPrimeTest();
     modInvTest();
+    keygenTest();
     // RNGTest(); /* Success */
 
     printf("Test complete\n");
