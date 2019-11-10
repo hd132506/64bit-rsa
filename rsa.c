@@ -57,7 +57,38 @@ llint mod(llint a, llint n) {
 }
 
 llint quotient(llint a, llint n) {
-    
+    llint shifter = n, follower = 1, q = 0;
+
+    /* 
+    Implement like mod, but follower counts quotient following shifter
+    */
+    while(a > (shifter << 1) && shifter < ULL_MAX_BIT) shifter <<= 1, follower <<= 1;
+    while(shifter >= n && a >= n) {
+        if(a >= shifter)  {
+            a -= shifter;
+            q |= follower;
+        }
+        shifter >>= 1, follower >>= 1;
+    }
+    return q;
+}
+
+/*
+ * Extended euclidean algorithm
+ * which stores {gcd(x, y), x, y} in ret[]
+ * where ax + by = gcd(x, y)
+ * ret should be an array whose size is at least 3
+*/
+void ex_euclid(llint a, llint b, llint ret[]) {
+    if(b == 0) {
+        ret[0] = a, ret[1] = 1, ret[2] = 0;
+        return;
+    }
+
+    ex_euclid(b, mod(a, b), ret);
+    /* For readability */
+    llint x = ret[1], y = ret[2];
+    ret[1] = y, ret[2] = x - quotient(a, b) * y;
 }
 
 /*
@@ -167,7 +198,6 @@ bool IsPrime(llint testNum, llint repeat) {
         }
     }
 
-
     return notPrime;
 }
 
@@ -180,9 +210,10 @@ bool IsPrime(llint testNum, llint repeat) {
  */
 llint ModInv(llint a, llint m) {
     llint result;
-    llint r = mod(a, m);
-    /* Premise: ax + ny = 1, x, y: integer */
-    
+    /* Premise: ax + my = 1, x, y: integer */
+    llint res[3] = {};
+    ex_euclid(a, m, res);
+    result = res[1] & ULL_MAX_BIT ? res[1] + m : res[1];
     return result;
 }
 
@@ -197,6 +228,7 @@ llint ModInv(llint a, llint m) {
  * @todo      과제 안내 문서의 제한사항을 참고하여 작성한다.
  */
 void miniRSAKeygen(llint *p, llint *q, llint *e, llint *d, llint *n) {
+    
 }
 
 /*

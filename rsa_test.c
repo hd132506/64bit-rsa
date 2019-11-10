@@ -96,10 +96,16 @@ void isPrimeTest() {
 
 void modInvTest() {
     assert(ModInv(3, 11) == 4);
+    assert(ModInv(11, 26) == 19);
+    assert(ModInv(22801763489, 32760247633) == 12390598440);
 }
 
-void quotiontTest() {
-    assert(quotiont(17, 2) == 8);
+void quotientTest() {
+    assert(quotient(17, 2) == 8);
+    assert(quotient(37, 3) == 12);
+    assert(quotient(100, 1) == 100);
+    assert(quotient(1, 100) == 0);
+    assert(quotient(ULLONG_MAX, ULLONG_MAX-1) == 1);
 }
 
 #ifdef TEST
@@ -109,12 +115,15 @@ int main() {
     InitWELLRNG512a(&seed);
 
     modTest();
-    quotiontTest();
+    quotientTest();
+
     modAddTest();
     modMulTest();
     modPowTest();
     isPrimeTest();
+    modInvTest();
     // RNGTest(); /* Success */
+
     printf("Test complete\n");
 }
 
